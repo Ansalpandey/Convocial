@@ -13,8 +13,7 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) // or PREFER_SETTINGS, but not both
   repositories {
     google()
     mavenCentral()
@@ -22,6 +21,7 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Project-X"
+
+rootProject.name = "Convocial"
 
 include(":app")

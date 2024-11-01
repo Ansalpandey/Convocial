@@ -5,14 +5,15 @@ plugins {
   id("com.google.dagger.hilt.android")
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.jetbrains.kotlin.serialization)
+  id("com.google.gms.google-services")
 }
 
 android {
-  namespace = "com.example.project_x"
+  namespace = "com.app.convocial"
   compileSdk = 35
 
   defaultConfig {
-    applicationId = "com.example.project_x"
+    applicationId = "com.app.convocial"
     minSdk = 28
     targetSdk = 35
     versionCode = 1
@@ -22,20 +23,31 @@ android {
     vectorDrawables { useSupportLibrary = true }
   }
 
+  signingConfigs {
+    create("release") {
+      keyAlias = "convocial-key"
+      keyPassword = "Ansalpandey@01"
+      storeFile = file("D:\\User\\convocial.jks")
+      storePassword = "Ansalpandey@01"
+    }
+  }
+
   buildTypes {
     release {
-      isMinifyEnabled = true
+      isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      signingConfig = signingConfigs.getByName("release")
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
   }
-  kotlinOptions { jvmTarget = "1.8" }
+  kotlinOptions { jvmTarget = "21" }
   buildFeatures { compose = true }
   packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
   buildToolsVersion = "35.0.0"
+  ndkVersion = "27.0.12077973"
 }
 
 dependencies {
@@ -119,12 +131,17 @@ dependencies {
   implementation(libs.androidx.media3.exoplayer.hls)
 
   implementation(libs.androidx.adaptive)
-  implementation (libs.androidx.adaptive.layout)
-  implementation (libs.androidx.adaptive.navigation)
-  implementation (libs.lottie.compose)
+  implementation(libs.androidx.adaptive.layout)
+  implementation(libs.androidx.adaptive.navigation)
+  implementation(libs.lottie.compose)
 
-  implementation (libs.socket.io.client) // for Kotlin or Java
-  implementation (libs.kotlinx.coroutines.core)
-  implementation (libs.androidx.media) // or the latest version
-  implementation (libs.androidx.core)  // to support NotificationCompat
+  implementation(libs.socket.io.client) // for Kotlin or Java
+  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.androidx.media) // or the latest version
+  implementation(libs.androidx.core) // to support NotificationCompat
+
+  // Firebase
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.analytics)
+  implementation(libs.firebase.messaging)
 }
