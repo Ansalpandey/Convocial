@@ -36,7 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.app.convocial.ui.navigation.Route
 
 @Composable
-fun CustomBottomBar(modifier: Modifier = Modifier, navController: NavController) {
+fun BottomBar(modifier: Modifier = Modifier, navController: NavController) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
 

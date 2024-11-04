@@ -27,7 +27,7 @@ import com.app.convocial.ui.navigation.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomAppBar(
+fun AppBar(
   modifier: Modifier = Modifier,
   image: String?,
   name: String?,

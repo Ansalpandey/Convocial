@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -37,8 +36,8 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.app.convocial.R
-import com.app.convocial.ui.components.CustomAppBar
-import com.app.convocial.ui.components.CustomBottomBar
+import com.app.convocial.ui.components.AppBar
+import com.app.convocial.ui.components.BottomBar
 import com.app.convocial.ui.components.LottieAnimationComponent
 import com.app.convocial.ui.components.PostItem
 import com.app.convocial.ui.navigation.Route
@@ -79,14 +78,14 @@ fun HomeScreen(
       // TopBar should only recompose when profileImage or name changes
       val profileImage by remember { derivedStateOf { profileState.data?.user?.profileImage } }
       val profileName by remember { derivedStateOf { profileState.data?.user?.name ?: "" } }
-      CustomAppBar(
+      AppBar(
         image = profileImage,
         name = profileName,
         navController = navController,
         scrollBehavior = scrollBehavior,
       )
     },
-    bottomBar = { CustomBottomBar(navController = navController) },
+    bottomBar = { BottomBar(navController = navController) },
   ) { innerPadding ->
     if (userState.isLoading) {
       Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

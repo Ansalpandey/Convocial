@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.app.convocial.data.model.NotificationResponse
-import com.app.convocial.ui.components.CustomBottomBar
+import com.app.convocial.ui.components.BottomBar
 import com.app.convocial.ui.components.NotificationItem
 import com.app.convocial.ui.viewmodel.NotificationViewModel
 
@@ -68,7 +68,7 @@ fun NotificationScreen(
         }
       )
     },
-    bottomBar = { CustomBottomBar(navController = navController) },
+    bottomBar = { BottomBar(navController = navController) },
   ) { innerPadding ->
     LazyColumn(
       modifier = Modifier.padding(innerPadding),

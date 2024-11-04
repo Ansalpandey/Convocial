@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.app.convocial.ui.components.CustomBottomBar
+import com.app.convocial.ui.components.BottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +26,7 @@ fun ChatScreen(modifier: Modifier = Modifier, navController: NavController) {
         title = { Text(text = "Messages", fontSize = 28.sp, modifier = Modifier.padding(10.dp)) }
       )
     },
-    bottomBar = { CustomBottomBar(navController = navController) },
+    bottomBar = { BottomBar(navController = navController) },
   ) { innerPadding ->
     Column(
       modifier = Modifier.padding(innerPadding),
