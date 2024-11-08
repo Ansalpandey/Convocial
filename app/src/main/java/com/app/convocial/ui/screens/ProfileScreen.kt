@@ -60,6 +60,7 @@ import com.app.convocial.R
 import com.app.convocial.common.Resource
 import com.app.convocial.ui.components.CourseItem
 import com.app.convocial.ui.components.PostItem
+import com.app.convocial.ui.components.PostShimmerItem
 import com.app.convocial.ui.navigation.Route
 import com.app.convocial.ui.viewmodel.PostViewModel
 import com.app.convocial.ui.viewmodel.ProfileViewModel
@@ -339,30 +340,45 @@ fun ProfileScreen(
                       modifier = Modifier.fillMaxSize(),
                       horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                      items(userPosts.itemCount) { index ->
-                        PostItem(
-                          post = userPosts[index],
-                          navController = navController,
-                          profileViewModel = profileViewModel,
-                          postViewModel = postViewModel,
-                          onClick = {
-                            /*TODO*/
-                          },
-                        )
+                      if (userPosts.loadState.refresh is LoadState.Loading) {
+                        items(10) {
+                          PostShimmerItem(
+                            isLoading = true,
+                            contentAfterLoading = {
+                              PostItem(
+                                post = userPosts.peek(it),
+                                navController = navController,
+                                profileViewModel = profileViewModel,
+                                postViewModel = postViewModel,
+                                onClick = {
+                                  val loggedInUserId = profileState.data?.user?._id
+                                  if (userPosts.peek(it)?.createdBy?._id == loggedInUserId) {
+                                    navController.navigate(Route.ProfileScreen)
+                                  } else {
+                                    navController.navigate(
+                                      Route.UserProfileScreen(userPosts.peek(it)?.createdBy?._id!!)
+                                    )
+                                  }
+                                },
+                              )
+                            },
+                          )
+                        }
+                      } else {
+                        items(userPosts.itemCount, key = { userPosts.peek(it)?._id ?: it }) { index ->
+                          PostItem(
+                            post = userPosts[index],
+                            navController = navController,
+                            profileViewModel = profileViewModel,
+                            postViewModel = postViewModel,
+                            onClick = {
+                              /*TODO*/
+                            },
+                          )
+                        }
                       }
                       userPosts.apply {
                         when {
-                          loadState.refresh is LoadState.Loading -> {
-                            item {
-                              Box(
-                                modifier = Modifier.fillParentMaxSize(),
-                                contentAlignment = Alignment.Center,
-                              ) {
-                                CircularProgressIndicator()
-                              }
-                            }
-                          }
-
                           loadState.append is LoadState.Loading -> {
                             item {
                               Box(

@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,6 +39,7 @@ import com.app.convocial.ui.components.AppBar
 import com.app.convocial.ui.components.BottomBar
 import com.app.convocial.ui.components.LottieAnimationComponent
 import com.app.convocial.ui.components.PostItem
+import com.app.convocial.ui.components.PostShimmerItem
 import com.app.convocial.ui.navigation.Route
 import com.app.convocial.ui.viewmodel.AuthViewModel
 import com.app.convocial.ui.viewmodel.PostViewModel
@@ -60,7 +60,7 @@ fun HomeScreen(
   val listState = rememberLazyListState()
 
   // PullRefresh state tied to loading state of posts
-  val isRefreshing = posts.loadState.refresh is LoadState.Loading
+  val isRefreshing = false
   val pullRefreshState =
     rememberPullRefreshState(
       refreshing = isRefreshing,
@@ -124,51 +124,62 @@ fun HomeScreen(
               }
             }
 
-            items(posts.itemCount, key = { posts.peek(it)?._id ?: it }) { index ->
-              posts[index]?.let { post ->
-                PostItem(
-                  post = post,
-                  navController = navController,
-                  profileViewModel = profileViewModel,
-                  postViewModel = postViewModel,
-                  onClick = {
-                    val loggedInUserId = profileState.data?.user?._id
-                    if (post.createdBy?._id == loggedInUserId) {
-                      navController.navigate(Route.ProfileScreen)
-                    } else {
-                      navController.navigate(Route.UserProfileScreen(post.createdBy?._id!!))
-                    }
+            if (posts.loadState.refresh is LoadState.Loading) {
+              items(10) {
+                PostShimmerItem(
+                  isLoading = true,
+                  contentAfterLoading = {
+                    PostItem(
+                      post = posts.peek(it),
+                      navController = navController,
+                      profileViewModel = profileViewModel,
+                      postViewModel = postViewModel,
+                      onClick = {
+                        val loggedInUserId = profileState.data?.user?._id
+                        if (posts.peek(it)?.createdBy?._id == loggedInUserId) {
+                          navController.navigate(Route.ProfileScreen)
+                        } else {
+                          navController.navigate(
+                            Route.UserProfileScreen(posts.peek(it)?.createdBy?._id!!)
+                          )
+                        }
+                      },
+                    )
                   },
                 )
               }
+            } else {
+              items(posts.itemCount, key = { posts.peek(it)?._id ?: it }) { index ->
+                posts[index]?.let { post ->
+                  PostItem(
+                    post = post,
+                    navController = navController,
+                    profileViewModel = profileViewModel,
+                    postViewModel = postViewModel,
+                    onClick = {
+                      val loggedInUserId = profileState.data?.user?._id
+                      if (post.createdBy?._id == loggedInUserId) {
+                        navController.navigate(Route.ProfileScreen)
+                      } else {
+                        navController.navigate(Route.UserProfileScreen(post.createdBy?._id!!))
+                      }
+                    },
+                  )
+                }
+              }
             }
-
             posts.apply {
               when {
-                loadState.refresh is LoadState.Loading -> {
-                  item {
-                    Box(
-                      modifier = Modifier.fillParentMaxSize(),
-                      contentAlignment = Alignment.Center,
-                    ) {
-                      CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                      )
-                    }
-                  }
-                }
-
                 loadState.append is LoadState.Loading -> {
                   item {
                     Box(
-                      modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                      modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp),
                       contentAlignment = Alignment.Center,
                     ) {
                       CircularProgressIndicator(
                         modifier = Modifier.size(22.dp),
                         strokeWidth = 2.dp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.primary,
                       )
                     }
                   }

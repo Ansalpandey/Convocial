@@ -61,6 +61,7 @@ import com.app.convocial.R
 import com.app.convocial.common.Resource
 import com.app.convocial.ui.components.CourseItem
 import com.app.convocial.ui.components.PostItem
+import com.app.convocial.ui.components.PostShimmerItem
 import com.app.convocial.ui.navigation.Route
 import com.app.convocial.ui.viewmodel.PostViewModel
 import com.app.convocial.ui.viewmodel.ProfileViewModel
@@ -252,7 +253,6 @@ fun UserProfileScreen(
               }
             }
             Spacer(modifier = Modifier.height(10.dp))
-
             Column(modifier = Modifier.fillMaxWidth().padding(start = 10.dp)) {
               Text(
                 text = state.data?.user?.bio ?: "",
@@ -286,7 +286,6 @@ fun UserProfileScreen(
                   }
                 }
               }
-
               IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                   imageVector = Icons.AutoMirrored.Filled.Send,
@@ -325,7 +324,6 @@ fun UserProfileScreen(
                 }
               }
             }
-
             HorizontalPager(
               count = tabIcons.size,
               state = pagerState,
@@ -345,7 +343,32 @@ fun UserProfileScreen(
                       modifier = Modifier.fillMaxSize(),
                       horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                      items(userPosts.itemCount) { index ->
+                      if (userPosts.loadState.refresh is LoadState.Loading) {
+                        items(10) {
+                          PostShimmerItem(
+                            isLoading = true,
+                            contentAfterLoading = {
+                              PostItem(
+                                post = userPosts.peek(it),
+                                navController = navController,
+                                profileViewModel = profileViewModel,
+                                postViewModel = postViewModel,
+                                onClick = {
+                                  val loggedInUserId = profileState.data?.user?._id
+                                  if (userPosts.peek(it)?.createdBy?._id == loggedInUserId) {
+                                    navController.navigate(Route.ProfileScreen)
+                                  } else {
+                                    navController.navigate(
+                                      Route.UserProfileScreen(userPosts.peek(it)?.createdBy?._id!!)
+                                    )
+                                  }
+                                },
+                              )
+                            },
+                          )
+                        }
+                      }
+                      items(userPosts.itemCount, key = { userPosts.peek(it)?._id ?: it }) { index ->
                         PostItem(
                           post = userPosts[index],
                           navController = navController,
@@ -358,16 +381,6 @@ fun UserProfileScreen(
                       }
                       userPosts.apply {
                         when {
-                          loadState.refresh is LoadState.Loading -> {
-                            item {
-                              Box(
-                                modifier = Modifier.fillParentMaxSize(),
-                                contentAlignment = Alignment.Center,
-                              ) {
-                                CircularProgressIndicator()
-                              }
-                            }
-                          }
                           loadState.append is LoadState.Loading -> {
                             item {
                               Box(
@@ -450,7 +463,6 @@ fun UserProfileScreen(
                     }
                   }
                 }
-
                 1 -> {
                   val courses = state.data?.user?.courses
                   if (courses.isNullOrEmpty()) {
@@ -483,7 +495,6 @@ fun UserProfileScreen(
         }
       }
     }
-
     is Resource.Error -> Text(text = "Error: ${state.message}")
   }
 }
