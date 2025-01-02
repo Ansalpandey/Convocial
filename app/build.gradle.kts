@@ -23,20 +23,20 @@ android {
     vectorDrawables { useSupportLibrary = true }
   }
 
-//  signingConfigs {
-//    create("release") {
-//      keyAlias = "convocial-key"
-//      keyPassword = "Ansalpandey@01"
-//      storeFile = file("D:\\User\\convocial.jks")
-//      storePassword = "Ansalpandey@01"
-//    }
-//  }
+  signingConfigs {
+    create("release") {
+      keyAlias = "key0"
+      keyPassword = "Ansalpandey@01"
+      storeFile = file("D:\\convocial.jks")
+      storePassword = "Ansalpandey@01"
+    }
+  }
 
   buildTypes {
     release {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-//      signingConfig = signingConfigs.getByName("release")
+      signingConfig = signingConfigs.getByName("release")
     }
   }
   compileOptions {

@@ -22,6 +22,6 @@ dependencyResolutionManagement {
 }
 
 
-rootProject.name = "Convocial"
+rootProject.name = "Slidee"
 
 include(":app")

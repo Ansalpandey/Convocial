@@ -22,10 +22,6 @@ class TokenManager @Inject constructor(@ApplicationContext private val context: 
     return sharedPreferences.getString("token", null)
   }
 
-  fun deleteToken() {
-    sharedPreferences.edit().remove("token").apply()
-  }
-
   fun clearTokens() {
     sharedPreferences.edit().clear().apply()
   }
@@ -52,11 +48,11 @@ constructor(
                 tokenManager.saveToken(newToken)
               }
             }
-            handler.postDelayed(this, 1296000990L) // Schedule to run every 15 days
+            handler.postDelayed(this, 1209600000L) // Start after 14 days
           }
         }
       }
-    handler.postDelayed(refreshTokenRunnable, 1296000990L) // Start after 15 days
+    handler.postDelayed(refreshTokenRunnable, 1209600000L) // Start after 14 days
   }
 
   private fun refreshAccessToken(): String? {
